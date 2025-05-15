@@ -92,6 +92,10 @@ class DiscordDrive {
     return await indexManager.addFolderToIndex(Snowflake.parse(parentFolderId), entry);
   }
 
+  Future<FolderIndex> readFolderIndex(String folderId) async {
+    return await indexManager.readIndex(Snowflake.parse(folderId));
+  }
+
   static Future<String> createRootFolderMessage(String indexChannelId, String token) async {
     final client = await Nyxx.connectRest(token);
     final discordData = DiscordData();

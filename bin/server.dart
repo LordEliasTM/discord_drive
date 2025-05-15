@@ -38,6 +38,10 @@ Future<Handler> init() async {
     }
   });
 
+  app.get("/folders/<folderId>/readIndex", (Request request, String folderId) async {
+    return await discordDrive.readFolderIndex(folderId);
+  });
+
   app.get("/getFileChunkLinks", (Request request) async {
     final chunkIndexMessageId = request.url.queryParameters['chunkIndexMessageId'];
     if (chunkIndexMessageId != null) {

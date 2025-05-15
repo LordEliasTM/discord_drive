@@ -35,14 +35,21 @@ class IndexManager {
   }
 
   _convertUint64ListToUint8List(List<int> data) => Uint64List.fromList(data).buffer.asUint8List();
+  _convertUint8ListToUint64List(Uint8List data) => Uint64List.view(data.buffer).toList();
 
-  Future<Message> _writeChunkIndexToDiscord(List<int> chunkIds) async {
+  Future<Message> _createChunkIndexOnDiscord(List<int> chunkIds) async {
     final data = _convertUint64ListToUint8List(chunkIds);
     return await discordData.createDataOnDiscord(data, _indexChannel);
   }
 
+  Future<List<int>> readChunkIndex(Snowflake chunkIndexMessageId) async {
+    final chunkIndexMessage = _indexChannel.messages[chunkIndexMessageId];
+    final data = await discordData.readDataFromDiscord(chunkIndexMessage);
+    return _convertUint8ListToUint64List(data);
+  }
+
   Future<FolderIndex> addFileToIndex(Snowflake folderIndexMessageId, List<int> chunkIds, String name, int size) async {
-    final chunkIndexMessage = await _writeChunkIndexToDiscord(chunkIds);
+    final chunkIndexMessage = await _createChunkIndexOnDiscord(chunkIds);
     final file = FileEntry(name: name, chunkIndexMessageId: chunkIndexMessage.id.value, size: size);
 
     final index = await readIndex(folderIndexMessageId);

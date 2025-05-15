@@ -29,5 +29,14 @@ Future<Handler> init() async {
     }
   });
 
+  app.get("/getFileChunkLinks", (Request request) async {
+    final chunkIndexMessageId = request.url.queryParameters['chunkIndexMessageId'];
+    if (chunkIndexMessageId != null) {
+      return await discordDrive.getFileChunkLinks(chunkIndexMessageId);
+    } else {
+      return Response(400, body: 'Query parameter chunkIndexMessageId is required');
+    }
+  });
+
   return app.call;
 }

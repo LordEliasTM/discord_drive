@@ -45,7 +45,7 @@ class DiscordData {
 
   /// Reads data from a discord message
   Future<Uint8List> readDataFromDiscord(PartialMessage message) async {
-    final msg = (await message.fetch()).content;
+    final msg = (await message.get()).content;
     final overMessageSizeLimit = msg[0] == "#";
 
     Uint8List data;

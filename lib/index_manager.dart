@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:discord_drive/types/file_entry.dart';
+import 'package:discord_drive/types/folder_entry.dart';
 import 'package:discord_drive/types/folder_index.dart';
 import 'package:discord_drive/util/discord_data.dart';
 import 'package:discord_drive/util/index_binary_encoder.dart';
@@ -49,11 +50,31 @@ class IndexManager {
   }
 
   Future<FolderIndex> addFileToIndex(Snowflake folderIndexMessageId, List<int> chunkIds, String name, int size) async {
+    // TODO make discord_drive create the index and FileEntry and pass it to this function
     final chunkIndexMessage = await _createChunkIndexOnDiscord(chunkIds);
     final file = FileEntry(name: name, chunkIndexMessageId: chunkIndexMessage.id.value, size: size);
 
     final index = await readIndex(folderIndexMessageId);
     index.files.add(file);
+    await writeIndex(folderIndexMessageId, index);
+    return index;
+  }
+
+  Future<Message> createFolderIndex() async {
+    final folderIndex = FolderIndex(
+      version: 1,
+      lastEdit: DateTime.now().millisecondsSinceEpoch,
+      files: [],
+      folders: [],
+    );
+
+    final data = IndexBinaryEncoder(index: folderIndex).encodeIndex();
+    return await discordData.createDataOnDiscord(data, _indexChannel);
+  }
+
+  Future<FolderIndex> addFolderToIndex(Snowflake folderIndexMessageId, FolderEntry folderEntry) async {
+    final index = await readIndex(folderIndexMessageId);
+    index.folders.add(folderEntry);
     await writeIndex(folderIndexMessageId, index);
     return index;
   }

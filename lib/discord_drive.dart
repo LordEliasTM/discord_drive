@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:async/async.dart';
 import 'package:discord_drive/index_manager.dart';
 import 'package:discord_drive/types/file_entry.dart';
+import 'package:discord_drive/types/folder_entry.dart';
 import 'package:discord_drive/types/folder_index.dart';
 import 'package:discord_drive/util/discord_data.dart';
 import 'package:discord_drive/util/index_binary_encoder.dart';
@@ -83,6 +84,12 @@ class DiscordDrive {
     final messages = await _fetchChunkMessages(chunkIds);
     final chunkLinks = messages.map((message) => message.attachments.first.url.toString()).toList();
     return chunkLinks;
+  }
+
+  Future<FolderIndex> createFolder(String parentFolderId, String folderName) async {
+    final index = await indexManager.createFolderIndex();
+    final entry = FolderEntry(name: folderName, indexMessageId: index.id.value);
+    return await indexManager.addFolderToIndex(Snowflake.parse(parentFolderId), entry);
   }
 
   static Future<String> createRootFolderMessage(String indexChannelId, String token) async {

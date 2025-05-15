@@ -8,7 +8,7 @@ part 'folder_index.g.dart';
 class FolderIndex {
   const FolderIndex({
     required this.version,
-    required this.lastEdit,
+    required this.lastEdit, // TODO remove
     required this.files,
     required this.folders,
   });

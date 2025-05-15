@@ -19,13 +19,22 @@ Future<Handler> init() async {
   app.get("/readRootFolderIndex", () async => 
     await discordDrive.readRootFolderIndex());
 
-  app.post("/<folderId>/uploadFile", (Request request, String folderId) async {
+  app.post("/folders/<folderId>/uploadFile", (Request request, String folderId) async {
     if(request.url.queryParameters['fileName'] case var fileName?) {
       print("$folderId $fileName");
       return discordDrive.uploadFile(folderId, fileName, request.read());
     }
     else {
       return Response(400, body: 'Query parameter fileName is required');
+    }
+  });
+
+  app.post("/folders/<folderId>/createFolder", (Request request, String folderId) async {
+    if(request.url.queryParameters['folderName'] case var folderName?) {
+      return discordDrive.createFolder(folderId, folderName);
+    }
+    else {
+      return Response(400, body: 'Query parameter folderName is required');
     }
   });
 

@@ -8,6 +8,7 @@ class FileEntry {
     required this.name,
     required this.chunkIndexMessageId,
     required this.size,
+    // TODO add upload timestamp
   });
 
   final String name;

@@ -1,0 +1,24 @@
+@rootFolderId = 1371095737643045055
+
+### /createRootFolder
+POST http://localhost:1000/createRootFolder
+
+### /readRootFolderIndex
+GET http://localhost:1000/readRootFolderIndex
+
+### /folders/<folderId>/uploadFile?fileName=
+POST http://localhost:1000/{{rootFolderId}}/uploadFile?fileName=getChunksTest.txt
+
+< ./25mb
+
+### /getFileChunkLinks?chunkIndexMessageId=
+GET http://localhost:1000/getFileChunkLinks?chunkIndexMessageId=1372675891821547520
+
+### /folders/<folderId>/createFolder?folderName=
+POST http://localhost:1000/folders/{{rootFolderId}}/createFolder?folderName=TestFolder2
+
+### /folders/<folderId>/readIndex
+GET http://localhost:1000/folders/1372701100683296802/readIndex
+
+### /resolvePath?path=
+GET http://localhost:1000/resolvePath?path=/TestFolder2/asd/

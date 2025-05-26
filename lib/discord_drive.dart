@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:async/async.dart';
+import 'package:path/path.dart' as p;
+import 'package:collection/collection.dart';
 import 'package:discord_drive/index_manager.dart';
 import 'package:discord_drive/types/file_entry.dart';
 import 'package:discord_drive/types/folder_entry.dart';
@@ -94,6 +96,25 @@ class DiscordDrive {
 
   Future<FolderIndex> readFolderIndex(String folderId) async {
     return await indexManager.readIndex(Snowflake.parse(folderId));
+  }
+
+  Future<void> resolvePath(String path) async {
+    // TODO fix
+    final parts = p.split(path);
+
+    FolderIndex currentFolder = await indexManager.readIndex(rootFolderId);
+
+    for (final part in parts) {
+      print('Processing: $part');
+      if(part == "/") continue;
+      FolderEntry? folderEntry = currentFolder.folders.firstWhereOrNull((folder) => folder.name == part);
+      if (folderEntry != null) {
+        currentFolder = await indexManager.readIndex(Snowflake.parse(folderEntry.indexMessageId));
+      } else {
+        print('Folder not found: $part');
+        return;
+      }
+    }
   }
 
   static Future<String> createRootFolderMessage(String indexChannelId, String token) async {

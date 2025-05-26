@@ -51,5 +51,15 @@ Future<Handler> init() async {
     }
   });
 
+  app.get("/resolvePath", (Request request) async {
+    final path = request.url.queryParameters['path'];
+    if (path != null) {
+      await discordDrive.resolvePath(path);
+      return Response.ok('Path resolved successfully');
+    } else {
+      return Response(400, body: 'Query parameter path is required');
+    }
+  });
+
   return app.call;
 }

@@ -99,7 +99,7 @@ class DiscordDrive {
   }
 
   Future<void> resolvePath(String path) async {
-    // TODO fix
+    // TODO not fully implemented yet, just a stub
     final parts = p.split(path);
 
     FolderIndex currentFolder = await indexManager.readIndex(rootFolderId);
